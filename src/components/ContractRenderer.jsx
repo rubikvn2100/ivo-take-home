@@ -1,10 +1,20 @@
 import React from 'react';
 
-function ContractRenderer({ contractConfig }) {
+function ContractRenderer({
+  contractConfig,
+  marks = { bold: false, italicized: false, underlined: false },
+}) {
+  const updatedMarks = {
+    bold: marks.bold || !!contractConfig.bold,
+    italicized: marks.italicized || !!contractConfig.italic,
+    underlined: marks.underlined || !!contractConfig.underline,
+  };
+
   const renderNodes = (nodes) => nodes.map((node, index) => (
     <ContractRenderer
       key={node.id || `${node.type || 'node'}-${index}`}
       contractConfig={node}
+      marks={updatedMarks}
     />
   ));
 
@@ -13,8 +23,9 @@ function ContractRenderer({ contractConfig }) {
   }
 
   const getStyles = (node) => ({
-    fontWeight: node.bold ? 'bold' : 'normal',
-    textDecoration: node.underline ? 'underline' : 'none',
+    fontWeight: updatedMarks.bold ? 'bold' : 'normal',
+    fontStyle: updatedMarks.italicized ? 'italic' : 'normal',
+    textDecoration: updatedMarks.underlined ? 'underline' : 'none',
   });
 
   if ('text' in contractConfig) {
