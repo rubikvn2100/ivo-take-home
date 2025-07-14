@@ -18,7 +18,20 @@ function ContractRenderer({ contractConfig }) {
   });
 
   if ('text' in contractConfig) {
-    return <p style={getStyles(contractConfig)}>{contractConfig.text}</p>;
+    if (!contractConfig.text.includes('\n')) {
+      return <span style={getStyles(contractConfig)}>{contractConfig.text}</span>;
+    }
+
+    const lines = contractConfig.text.split('\n');
+    return lines.map((line, index) => (
+      <span
+        key={`line-${contractConfig.id || contractConfig.type || 'text'}`}
+        style={{ ...getStyles(contractConfig) }}
+      >
+        {line}
+        {index < lines.length - 1 && <br />}
+      </span>
+    ));
   }
 
   const children = contractConfig.children ? renderNodes(contractConfig.children) : null;
