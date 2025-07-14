@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "airbnb",
+    "react-app"
+  ],
+  "rules": {
+    "react/prop-types": "off"
+  }
+}
