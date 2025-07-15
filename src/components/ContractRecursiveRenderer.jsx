@@ -3,6 +3,8 @@ import React from 'react';
 function ContractRecursiveRenderer({
   contractConfig,
   marks = { bold: false, italicized: false, underlined: false },
+  getMention,
+  updateMention,
 }) {
   const updatedMarks = {
     bold: marks.bold || !!contractConfig.bold,
@@ -15,6 +17,8 @@ function ContractRecursiveRenderer({
       key={node.id || `${node.type || 'node'}-${index}`}
       contractConfig={node}
       marks={updatedMarks}
+      getMention={getMention}
+      updateMention={updateMention}
     />
   ));
 
@@ -54,16 +58,20 @@ function ContractRecursiveRenderer({
           {children}
         </div>
       );
-    case 'mention':
+    case 'mention': {
+      const mentionValue = getMention(contractConfig);
       return (
         <span
           className="mention"
           style={{ ...getStyles(contractConfig), backgroundColor: contractConfig.color }}
           title={contractConfig.title}
+          contentEditable
+          onBlur={(e) => updateMention(contractConfig.id, e.target.textContent)}
         >
-          {contractConfig.value || (contractConfig.children && contractConfig.children[0]?.text)}
+          {mentionValue}
         </span>
       );
+    }
     case 'block':
       return <div style={getStyles(contractConfig)}>{children}</div>;
     case 'p':
